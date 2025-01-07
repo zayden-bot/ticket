@@ -1,16 +1,26 @@
 pub mod components;
-pub mod error;
-pub mod message_command;
-pub mod modal;
-pub mod slash_commands;
-pub mod support_guild_manager;
+pub use components::TicketComponent;
 
+pub mod error;
 pub use error::Error;
 use error::Result;
+
+pub mod message_command;
+pub use message_command::SupportMessageCommand;
+
+pub mod modal;
+pub use modal::SupportModal;
+
+pub mod slash_commands;
+pub use slash_commands::SupportCommand;
+pub use slash_commands::TicketCommand;
+
+pub mod support_guild_manager;
+pub use support_guild_manager::TicketGuildManager;
+
 use serenity::all::{
     ButtonStyle, ChannelId, Context, CreateButton, CreateMessage, Mentionable, RoleId, User,
 };
-pub use support_guild_manager::TicketGuildManager;
 
 pub fn thread_name(thread_id: i32, author_name: &str, content: &str) -> String {
     format!("{} - {} - {}", thread_id, author_name, content)
