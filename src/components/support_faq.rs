@@ -25,7 +25,8 @@ pub async fn support_faq<Db: Database, GuildManager: TicketGuildManager<Db>>(
         .await
         .unwrap()
         .unwrap()
-        .faq_channel_id();
+        .faq_channel_id()
+        .unwrap();
 
     let message = faq_channel_id
         .messages_iter(ctx)

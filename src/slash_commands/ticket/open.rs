@@ -16,7 +16,8 @@ impl TicketCommand {
             .await
             .unwrap()
             .unwrap()
-            .channel_id();
+            .channel_id()
+            .unwrap();
 
         let channel = interaction.channel.as_ref().unwrap();
 

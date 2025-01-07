@@ -19,7 +19,7 @@ impl SupportMessageCommand {
 
         let row = GuildManager::get(pool, guild_id).await.unwrap().unwrap();
 
-        let channel_id = row.channel_id();
+        let channel_id = row.channel_id().unwrap();
         if channel_id != message.channel_id {
             return Ok(());
         }

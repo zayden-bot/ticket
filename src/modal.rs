@@ -20,7 +20,7 @@ impl SupportModal {
 
         let row = GuildManager::get(pool, guild_id).await.unwrap().unwrap();
 
-        let channel_id = row.channel_id();
+        let channel_id = row.channel_id().unwrap();
         let role_ids = row.role_ids();
 
         let mut data = parse_modal_data(&interaction.data.components);
