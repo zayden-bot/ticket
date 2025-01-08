@@ -17,7 +17,10 @@ impl SupportMessageCommand {
     ) -> Result<()> {
         let guild_id = message.guild_id.ok_or(Error::MissingGuildId)?;
 
-        let row = GuildManager::get(pool, guild_id).await.unwrap().unwrap();
+        let row = match GuildManager::get(pool, guild_id).await.unwrap() {
+            Some(row) => row,
+            None => return Ok(()),
+        };
 
         let channel_id = row.channel_id().unwrap();
         if channel_id != message.channel_id {
