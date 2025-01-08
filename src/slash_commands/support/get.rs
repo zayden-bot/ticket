@@ -47,7 +47,9 @@ impl SupportCommand {
                         EditInteractionResponse::new()
                             .embed(CreateEmbed::new().title(title).description(description)),
                     )
-                    .await?;
+                    .await
+                    .unwrap();
+
                 return Ok(());
             }
         }
@@ -57,7 +59,9 @@ impl SupportCommand {
                 ctx,
                 EditInteractionResponse::new().content("Support message not found"),
             )
-            .await?;
+            .await
+            .unwrap();
+
         Ok(())
     }
 }

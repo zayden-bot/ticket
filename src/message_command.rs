@@ -40,7 +40,8 @@ impl SupportMessageCommand {
                     .kind(ChannelType::PrivateThread)
                     .auto_archive_duration(AutoArchiveDuration::OneWeek),
             )
-            .await?;
+            .await
+            .unwrap();
 
         let issue = CreateEmbed::new()
             .title("Issue")

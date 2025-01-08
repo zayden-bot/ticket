@@ -48,7 +48,8 @@ impl TicketCommand {
         interaction
             .channel_id
             .edit(ctx, EditChannel::new().name(new_channel_name))
-            .await?;
+            .await
+            .unwrap();
 
         let response = if version.is_empty() {
             EditInteractionResponse::new().content("Ticket marked as fixed")

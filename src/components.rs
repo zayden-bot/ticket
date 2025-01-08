@@ -54,11 +54,13 @@ impl TicketComponent {
         interaction
             .channel_id
             .edit_thread(ctx, EditThread::new().name(new_channel_name).archived(true))
-            .await?;
+            .await
+            .unwrap();
 
         interaction
             .create_response(ctx, CreateInteractionResponse::Acknowledge)
-            .await?;
+            .await
+            .unwrap();
 
         Ok(())
     }
@@ -108,7 +110,8 @@ impl TicketComponent {
                     ),
                 ),
             )
-            .await?;
+            .await
+            .unwrap();
 
         Ok(())
     }
