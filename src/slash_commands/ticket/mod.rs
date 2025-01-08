@@ -36,7 +36,7 @@ impl TicketCommand {
                 Self::close::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
             "fixed" => {
-                // Self::fixed::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
+                Self::fixed::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
             "open" => Self::open::<Db, GuildManager>(ctx, interaction, pool, guild_id).await?,
             _ => unreachable!("Subcommand is required"),
