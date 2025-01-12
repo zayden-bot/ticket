@@ -1,4 +1,5 @@
 pub mod components;
+pub mod ready;
 pub use components::TicketComponent;
 
 pub mod error;
