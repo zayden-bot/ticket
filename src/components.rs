@@ -11,28 +11,21 @@ use crate::{Error, Result, TicketGuildManager};
 pub struct TicketComponent;
 
 impl TicketComponent {
-    pub async fn support_ticket(ctx: &Context, interaction: &ComponentInteraction) -> Result<()> {
-        let version_input = CreateInputText::new(InputTextStyle::Short, "Game Version", "version")
-            .placeholder("1.0.0");
-
+    pub async fn support_ticket(
+        ctx: &Context,
+        interaction: &ComponentInteraction,
+        compnents: Vec<CreateInputText>,
+    ) -> Result<()> {
         let issue_input = CreateInputText::new(InputTextStyle::Paragraph, "Issue", "issue")
             .placeholder("Describe the issue you're experiencing");
 
-        let additional_input = CreateInputText::new(
-            InputTextStyle::Paragraph,
-            "Additional Information",
-            "additional",
-        )
-        .required(false)
-        .placeholder(
-            "Please send a save file that replicates the issue once the ticket is created.",
+        let modal = CreateModal::new("support_ticket", "Support Ticket").components(
+            compnents
+                .into_iter()
+                .chain(vec![issue_input])
+                .map(CreateActionRow::InputText)
+                .collect(),
         );
-
-        let modal = CreateModal::new("support_ticket", "Support Ticket").components(vec![
-            CreateActionRow::InputText(version_input),
-            CreateActionRow::InputText(issue_input),
-            CreateActionRow::InputText(additional_input),
-        ]);
 
         interaction
             .create_response(&ctx, CreateInteractionResponse::Modal(modal))
