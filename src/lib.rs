@@ -94,8 +94,6 @@ fn to_title_case(input: &str) -> String {
             match chars.next() {
                 None => String::new(),
                 Some(first) => {
-                    // Collect the uppercase version of the first character,
-                    // then append the lowercase version of the remaining characters.
                     first.to_uppercase().collect::<String>()
                         + chars.as_str().to_lowercase().as_str()
                 }
