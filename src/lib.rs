@@ -35,7 +35,7 @@ pub async fn send_support_message(
     thread_id: ChannelId,
     role_ids: &[RoleId],
     author: &User,
-    messages: [CreateMessage; 2],
+    mut messages: Vec<CreateMessage>,
 ) -> Result<()> {
     let mentions: String = role_ids
         .iter()
@@ -43,21 +43,64 @@ pub async fn send_support_message(
         .chain([author.mention().to_string()])
         .collect();
 
-    let [first, last] = messages;
-
-    thread_id
-        .send_message(ctx, first.content(mentions))
-        .await
-        .unwrap();
-
     let button = CreateButton::new("support_close")
         .label("Close")
         .style(ButtonStyle::Primary);
 
-    thread_id
-        .send_message(ctx, last.button(button))
-        .await
-        .unwrap();
+    if messages.len() == 1 {
+        thread_id
+            .send_message(
+                ctx,
+                messages.pop().unwrap().content(mentions).button(button),
+            )
+            .await
+            .unwrap();
+
+        return Ok(());
+    }
+
+    let last_idx = messages.len() - 1;
+
+    for (i, message) in messages.into_iter().enumerate() {
+        if i == 0 {
+            thread_id
+                .send_message(ctx, message.content(mentions.clone()))
+                .await
+                .unwrap();
+
+            continue;
+        }
+
+        if i == last_idx {
+            thread_id
+                .send_message(ctx, message.button(button.clone()))
+                .await
+                .unwrap();
+
+            continue;
+        }
+
+        thread_id.send_message(ctx, message).await.unwrap();
+    }
 
     Ok(())
+}
+
+fn to_title_case(input: &str) -> String {
+    input
+        .split_whitespace()
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(first) => {
+                    // Collect the uppercase version of the first character,
+                    // then append the lowercase version of the remaining characters.
+                    first.to_uppercase().collect::<String>()
+                        + chars.as_str().to_lowercase().as_str()
+                }
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
 }

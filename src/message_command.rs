@@ -60,14 +60,15 @@ impl SupportMessageCommand {
             .collect::<Vec<_>>()
             .await;
 
-        let messages: [CreateMessage; 2] = [
-            CreateMessage::new().embed(issue).files(attachments),
-            CreateMessage::new(),
-        ];
-
-        send_support_message(ctx, thread.id, &role_ids, &message.author, messages)
-            .await
-            .unwrap();
+        send_support_message(
+            ctx,
+            thread.id,
+            &role_ids,
+            &message.author,
+            vec![CreateMessage::new().embed(issue).files(attachments)],
+        )
+        .await
+        .unwrap();
 
         match message.delete(&ctx).await {
             // 10008: Unknown Message

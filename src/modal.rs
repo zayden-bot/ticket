@@ -6,7 +6,7 @@ use serenity::all::{
 use sqlx::{Database, Pool};
 use zayden_core::parse_modal_data;
 
-use crate::{send_support_message, thread_name, Error, Result, TicketGuildManager};
+use crate::{send_support_message, thread_name, to_title_case, Error, Result, TicketGuildManager};
 
 pub struct SupportModal;
 
@@ -32,17 +32,23 @@ impl SupportModal {
             content,
         );
 
-        let version = data.remove("version").unwrap();
+        let mut issue = CreateEmbed::new().title("Issue").description(content);
 
-        let issue = CreateEmbed::new()
-            .title("Issue")
-            .description(content)
-            .footer(CreateEmbedFooter::new(format!("Version: {}", version)));
+        if let Some(version) = data.remove("version") {
+            issue = issue.footer(CreateEmbedFooter::new(version));
+        }
 
-        let mut messages: [CreateMessage; 2] =
-            [CreateMessage::new().embed(issue), CreateMessage::new()];
+        let mut messages: Vec<CreateMessage> = vec![CreateMessage::new().embed(issue)];
 
-        let additional = data.remove("additional").unwrap();
+        data.drain()
+            .filter(|(_, v)| !v.is_empty())
+            .for_each(|(k, v)| {
+                let title = to_title_case(k);
+                let embed = CreateEmbed::new().title(title).description(v);
+                messages.push(CreateMessage::new().embed(embed));
+            });
+
+        let additional = data.remove("additional").unwrap_or_default();
         if !additional.is_empty() {
             let additional = CreateEmbed::new()
                 .title("Additional Information")
