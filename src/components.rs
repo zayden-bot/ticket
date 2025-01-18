@@ -14,15 +14,15 @@ impl TicketComponent {
     pub async fn support_ticket(
         ctx: &Context,
         interaction: &ComponentInteraction,
-        compnents: Vec<CreateInputText>,
+        compnents: impl IntoIterator<Item = CreateInputText>,
     ) -> Result<()> {
         let issue_input = CreateInputText::new(InputTextStyle::Paragraph, "Issue", "issue")
             .placeholder("Describe the issue you're experiencing");
 
         let modal = CreateModal::new("support_ticket", "Support Ticket").components(
-            compnents
+            vec![issue_input]
                 .into_iter()
-                .chain(vec![issue_input])
+                .chain(compnents)
                 .map(CreateActionRow::InputText)
                 .collect(),
         );
