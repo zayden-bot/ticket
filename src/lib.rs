@@ -23,6 +23,9 @@ use serenity::all::{
     ButtonStyle, ChannelId, Context, CreateButton, CreateMessage, Mentionable, RoleId, User,
 };
 
+pub struct Support;
+pub struct Ticket;
+
 pub fn thread_name(thread_id: i32, author_name: &str, content: &str) -> String {
     format!("{} - {} - {}", thread_id, author_name, content)
         .chars()

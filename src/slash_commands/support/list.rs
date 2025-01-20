@@ -10,7 +10,7 @@ use crate::{Result, TicketGuildManager};
 use super::SupportCommand;
 
 impl SupportCommand {
-    pub async fn list<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn list<Db: Database, GuildManager: TicketGuildManager<Db>>(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,

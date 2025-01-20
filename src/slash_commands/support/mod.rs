@@ -17,13 +17,13 @@ impl SupportCommand {
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,
-        options: Vec<ResolvedOption<'_>>,
+        mut options: Vec<ResolvedOption<'_>>,
     ) -> Result<()> {
         let guild_id = interaction.guild_id.ok_or(Error::MissingGuildId)?;
 
-        let command = &options[0];
+        let command = options.remove(0);
 
-        let options = match &command.value {
+        let options = match command.value {
             ResolvedValue::SubCommand(options) => options,
             ResolvedValue::SubCommandGroup(options) => options,
             _ => unreachable!("Subcommand is required"),

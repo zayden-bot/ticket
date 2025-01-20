@@ -10,15 +10,15 @@ use crate::{Error, Result, TicketGuildManager};
 use super::TicketCommand;
 
 impl TicketCommand {
-    pub async fn close<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn close<Db: Database, GuildManager: TicketGuildManager<Db>>(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,
-        mut options: HashMap<&str, &ResolvedValue<'_>>,
+        mut options: HashMap<&str, ResolvedValue<'_>>,
         guild_id: GuildId,
     ) -> Result<()> {
         let message = match options.remove("message") {
-            Some(ResolvedValue::String(message)) => *message,
+            Some(ResolvedValue::String(message)) => message,
             _ => "",
         };
 

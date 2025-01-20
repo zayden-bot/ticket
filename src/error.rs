@@ -6,18 +6,13 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     MissingGuildId,
     NotInSupportChannel,
-
-    Serenity(serenity::Error),
 }
 
 impl ErrorResponse for Error {
-    fn to_response(&self) -> String {
+    fn to_response<'a>(&self) -> &'a str {
         match self {
-            Error::MissingGuildId => String::from("This command only works in a server."),
-            Error::NotInSupportChannel => {
-                String::from("This command only works in the support channel.")
-            }
-            _ => String::new(),
+            Error::MissingGuildId => "This command only works in a server.",
+            Error::NotInSupportChannel => "This command only works in the support channel.",
         }
     }
 }
@@ -29,9 +24,3 @@ impl std::fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
-
-impl From<serenity::Error> for Error {
-    fn from(e: serenity::Error) -> Self {
-        Error::Serenity(e)
-    }
-}

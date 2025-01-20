@@ -6,7 +6,7 @@ use crate::{Error, Result, TicketGuildManager};
 use super::TicketCommand;
 
 impl TicketCommand {
-    pub async fn open<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn open<Db: Database, GuildManager: TicketGuildManager<Db>>(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,

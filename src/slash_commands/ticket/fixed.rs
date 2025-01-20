@@ -10,15 +10,15 @@ use crate::{Error, Result, TicketGuildManager};
 use super::TicketCommand;
 
 impl TicketCommand {
-    pub async fn fixed<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn fixed<Db: Database, GuildManager: TicketGuildManager<Db>>(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,
-        mut options: HashMap<&str, &ResolvedValue<'_>>,
+        mut options: HashMap<&str, ResolvedValue<'_>>,
         guild_id: GuildId,
     ) -> Result<()> {
         let version = match options.remove("version") {
-            Some(ResolvedValue::String(message)) => *message,
+            Some(ResolvedValue::String(message)) => message,
             _ => "",
         };
 

@@ -11,11 +11,11 @@ use crate::{Result, TicketGuildManager};
 use super::SupportCommand;
 
 impl SupportCommand {
-    pub async fn get<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn get<Db: Database, GuildManager: TicketGuildManager<Db>>(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,
-        mut options: HashMap<&str, &ResolvedValue<'_>>,
+        mut options: HashMap<&str, ResolvedValue<'_>>,
         guild_id: GuildId,
     ) -> Result<()> {
         interaction.defer(ctx).await.unwrap();

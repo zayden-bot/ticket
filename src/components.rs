@@ -19,7 +19,7 @@ impl TicketComponent {
         let issue_input = CreateInputText::new(InputTextStyle::Paragraph, "Issue", "issue")
             .placeholder("Describe the issue you're experiencing");
 
-        let modal = CreateModal::new("support_ticket", "Support Ticket").components(
+        let modal = CreateModal::new("ticket", "Ticket").components(
             vec![issue_input]
                 .into_iter()
                 .chain(compnents)
