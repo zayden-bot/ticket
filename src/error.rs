@@ -1,3 +1,4 @@
+use zayden_core::Error as ZaydenError;
 use zayden_core::ErrorResponse;
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -9,9 +10,9 @@ pub enum Error {
 }
 
 impl ErrorResponse for Error {
-    fn to_response<'a>(&self) -> &'a str {
+    fn to_response(&self) -> &str {
         match self {
-            Error::MissingGuildId => "This command only works in a server.",
+            Error::MissingGuildId => ZaydenError::MissingGuildId.to_response(),
             Error::NotInSupportChannel => "This command only works in the support channel.",
         }
     }
