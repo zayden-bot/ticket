@@ -67,6 +67,10 @@ impl SupportModal {
             .await
             .unwrap();
 
+        GuildManager::update_thread_id(pool, guild_id)
+            .await
+            .unwrap();
+
         interaction
             .create_response(
                 ctx,
@@ -82,10 +86,6 @@ impl SupportModal {
         send_support_message(ctx, thread.id, &role_ids, &interaction.user, messages)
             .await
             .unwrap();
-
-        // update_support_thread_id(&pool, guild_id.get(), thread_id)
-        //     .await
-        //     .unwrap();
 
         Ok(())
     }

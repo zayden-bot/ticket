@@ -46,6 +46,10 @@ impl SupportMessageCommand {
             .await
             .unwrap();
 
+        GuildManager::update_thread_id(pool, guild_id)
+            .await
+            .unwrap();
+
         let issue = CreateEmbed::new()
             .title("Issue")
             .description(&message.content);

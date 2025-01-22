@@ -8,6 +8,8 @@ pub trait TicketGuildManager<Db: Database> {
         pool: &Pool<Db>,
         id: impl Into<GuildId> + Send,
     ) -> sqlx::Result<Option<TicketGuildRow>>;
+
+    async fn update_thread_id(pool: &Pool<Db>, id: impl Into<GuildId> + Send) -> sqlx::Result<()>;
 }
 
 #[derive(FromRow)]
