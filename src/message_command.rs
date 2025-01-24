@@ -5,7 +5,7 @@ use serenity::all::{
 };
 use sqlx::{Database, Pool};
 
-use crate::{send_support_message, thread_name, Error, Result, TicketGuildManager};
+use crate::{send_support_message, thread_name, Result, TicketGuildManager};
 
 pub struct SupportMessageCommand;
 
@@ -15,11 +15,12 @@ impl SupportMessageCommand {
         message: &Message,
         pool: &Pool<Db>,
     ) -> Result<()> {
-        let guild_id = message.guild_id.ok_or(Error::MissingGuildId)?;
+        let Some(guild_id) = message.guild_id else {
+            return Ok(());
+        };
 
-        let row = match GuildManager::get(pool, guild_id).await.unwrap() {
-            Some(row) => row,
-            None => return Ok(()),
+        let Some(row) = GuildManager::get(pool, guild_id).await.unwrap() else {
+            return Ok(());
         };
 
         let channel_id = row.channel_id().unwrap();
