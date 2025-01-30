@@ -6,28 +6,36 @@ use serenity::all::{
 use sqlx::{Database, Pool};
 use zayden_core::parse_modal_data;
 
-use crate::{send_support_message, thread_name, to_title_case, Error, Result, TicketGuildManager};
+use crate::{
+    send_support_message, thread_name, ticket_manager::TicketManager, to_title_case, Result,
+    TicketGuildManager,
+};
 
-pub struct SupportModal;
+pub struct TicketModal;
 
-impl SupportModal {
-    pub async fn run<Db: Database, GuildManager: TicketGuildManager<Db>>(
+impl TicketModal {
+    pub async fn run<
+        Db: Database,
+        GuildManager: TicketGuildManager<Db>,
+        Manager: TicketManager<Db>,
+    >(
         ctx: &Context,
         interaction: &ModalInteraction,
         pool: &Pool<Db>,
     ) -> Result<()> {
-        let guild_id = interaction.guild_id.ok_or(Error::MissingGuildId)?;
+        let guild_id = interaction.guild_id.unwrap();
 
-        let row = GuildManager::get(pool, guild_id).await.unwrap().unwrap();
+        let guild_row = GuildManager::get(pool, guild_id).await.unwrap().unwrap();
 
-        let channel_id = row.channel_id().unwrap();
-        let role_ids = row.role_ids();
+        let message = interaction.message.as_ref().unwrap();
+        let ticket_row = Manager::get(pool, message.id).await.unwrap();
+        let role_ids = ticket_row.role_ids();
 
         let mut data = parse_modal_data(&interaction.data.components);
         let content = data.remove("issue").unwrap();
 
         let thread_name = thread_name(
-            row.thread_id,
+            guild_row.thread_id,
             interaction.member.as_ref().unwrap().display_name(),
             content,
         );
@@ -57,7 +65,8 @@ impl SupportModal {
             messages[1] = CreateMessage::new().embed(additional);
         }
 
-        let thread = channel_id
+        let thread = interaction
+            .channel_id
             .create_thread(
                 ctx,
                 CreateThread::new(&thread_name)

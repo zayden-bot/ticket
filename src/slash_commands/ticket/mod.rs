@@ -36,7 +36,7 @@ impl TicketCommand {
             "close" => {
                 Self::close::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
-            "create" => Self::create::<Db, GuildManager>(ctx, interaction, pool, options).await?,
+            "create" => Self::create(ctx, interaction, options).await?,
             "fixed" => {
                 Self::fixed::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }

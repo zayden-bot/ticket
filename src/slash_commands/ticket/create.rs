@@ -1,20 +1,18 @@
 use std::collections::HashMap;
 
 use serenity::all::{
-    ButtonStyle, CommandInteraction, Context, CreateButton, CreateEmbed, CreateMessage, GuildId,
+    ButtonStyle, CommandInteraction, Context, CreateButton, CreateEmbed, CreateMessage,
     ResolvedValue,
 };
-use sqlx::{Database, Pool};
 
-use crate::{Result, TicketGuildManager};
+use crate::Result;
 
 use super::TicketCommand;
 
 impl TicketCommand {
-    pub(super) async fn create<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub(super) async fn create(
         ctx: &Context,
         interaction: &CommandInteraction,
-        pool: &Pool<Db>,
         mut options: HashMap<&str, ResolvedValue<'_>>,
     ) -> Result<()> {
         let Some(ResolvedValue::String(title)) = options.remove("title") else {

@@ -29,7 +29,7 @@ pub async fn run<Db: Database, GuildManager: TicketGuildManager<Db>>(
             .and_then(|c| c.components.first())
         {
             if let ButtonKind::NonLink { custom_id, .. } = &b.data {
-                if custom_id == "support_ticket" {
+                if custom_id == "ticket_create" {
                     message.delete(ctx).await.unwrap();
                     break;
                 }
@@ -41,7 +41,7 @@ pub async fn run<Db: Database, GuildManager: TicketGuildManager<Db>>(
         .send_message(
             ctx,
             CreateMessage::default()
-                .button(CreateButton::new("support_ticket").label("Create Support Ticket")),
+                .button(CreateButton::new("ticket_create").label("Create Support Ticket")),
         )
         .await
         .unwrap();

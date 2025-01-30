@@ -1,5 +1,6 @@
 pub mod components;
 pub mod ready;
+pub mod ticket_manager;
 pub use components::TicketComponent;
 
 pub mod error;
@@ -10,7 +11,7 @@ pub mod message_command;
 pub use message_command::SupportMessageCommand;
 
 pub mod modal;
-pub use modal::SupportModal;
+pub use modal::TicketModal;
 
 pub mod slash_commands;
 pub use slash_commands::SupportCommand;

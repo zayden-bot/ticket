@@ -11,7 +11,7 @@ use crate::{Error, Result, TicketGuildManager};
 pub struct TicketComponent;
 
 impl TicketComponent {
-    pub async fn support_ticket(
+    pub async fn ticket_create(
         ctx: &Context,
         interaction: &ComponentInteraction,
         compnents: impl IntoIterator<Item = CreateInputText>,
@@ -19,7 +19,7 @@ impl TicketComponent {
         let issue_input = CreateInputText::new(InputTextStyle::Paragraph, "Issue", "issue")
             .placeholder("Describe the issue you're experiencing");
 
-        let modal = CreateModal::new("ticket", "Ticket").components(
+        let modal = CreateModal::new("create_ticket", "Ticket").components(
             vec![issue_input]
                 .into_iter()
                 .chain(compnents)
