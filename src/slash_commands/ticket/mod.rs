@@ -1,4 +1,5 @@
 mod close;
+pub mod create;
 mod fixed;
 mod open;
 
@@ -35,6 +36,7 @@ impl TicketCommand {
             "close" => {
                 Self::close::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
+            "create" => Self::create::<Db, GuildManager>(ctx, interaction, pool, options).await?,
             "fixed" => {
                 Self::fixed::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
@@ -57,6 +59,27 @@ impl TicketCommand {
                     .required(false),
                 );
 
+        let create = CreateCommandOption::new(
+            CommandOptionType::SubCommand,
+            "create",
+            "Create a ticket embed and button",
+        )
+        .add_sub_option(CreateCommandOption::new(
+            CommandOptionType::String,
+            "title",
+            "The title of the ticket embed",
+        ))
+        .add_sub_option(CreateCommandOption::new(
+            CommandOptionType::String,
+            "description",
+            "The description of the ticket embed",
+        ))
+        .add_sub_option(CreateCommandOption::new(
+            CommandOptionType::String,
+            "label",
+            "The label of the ticket button",
+        ));
+
         let fixed = CreateCommandOption::new(
             CommandOptionType::SubCommand,
             "fixed",
@@ -78,6 +101,7 @@ impl TicketCommand {
             .description("Ticket management commands")
             .default_member_permissions(Permissions::MANAGE_MESSAGES)
             .add_option(close)
+            .add_option(create)
             .add_option(fixed)
             .add_option(open)
     }
