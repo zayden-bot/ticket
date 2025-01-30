@@ -10,9 +10,17 @@ use crate::{Result, TicketGuildManager};
 
 use super::TicketCommand;
 
-const DESCRIPTION: &str = "This is a safe way to report an issue with the server or voice your concerns with annother community member.
+const DESCRIPTION_1: &str = "This is a safe way to report an issue with the server or voice your concerns with another community member.
 
-Only <@381973220083105793> and the Discord Moderation Team have acccess to the information in the Support Ticket.";
+Only <@381973220083105793> and the <@&1275143477654454394> Team can access the information in this Support Ticket.";
+
+const DESCRIPTION_2: &str = "This is a safe way to report any issues in the channel or voice your concerns regarding another viewer.
+
+Only <@381973220083105793> and the <@&1275149982701191260> Team can access the information in this Support Ticket.";
+
+const DESCRIPTION_3: &str = "Congratulations on your win! Please create a ticket and send us your Bungie ID. Once you open a ticket, we will inform you if we need anything else.
+
+Only <@381973220083105793> and the Moderation Team have access to the information in the ticket.";
 
 impl TicketCommand {
     pub(super) async fn create<Db: Database, GuildManager: TicketGuildManager<Db>>(
@@ -35,7 +43,7 @@ impl TicketCommand {
 
         interaction.defer_ephemeral(ctx).await.unwrap();
 
-        let embed = CreateEmbed::new().title(title).description(DESCRIPTION);
+        let embed = CreateEmbed::new().title(title).description(DESCRIPTION_1);
 
         let button = CreateButton::new("ticket_create")
             .style(ButtonStyle::Primary)
