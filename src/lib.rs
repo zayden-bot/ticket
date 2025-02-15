@@ -1,3 +1,5 @@
+use serenity::all::{ButtonStyle, ChannelId, Context, CreateButton, CreateMessage, Mention};
+
 pub mod components;
 pub mod error;
 pub mod message_command;
@@ -12,14 +14,9 @@ pub use error::Error;
 use error::Result;
 pub use message_command::SupportMessageCommand;
 pub use modal::TicketModal;
-pub use slash_commands::SupportCommand;
-pub use slash_commands::TicketCommand;
+pub use slash_commands::{SupportCommand, TicketCommand};
 pub use support_guild_manager::TicketGuildManager;
 pub use ticket_manager::TicketManager;
-
-use serenity::all::{
-    ButtonStyle, ChannelId, Context, CreateButton, CreateMessage, Mentionable, RoleId, User,
-};
 
 pub struct Support;
 pub struct Ticket;
@@ -34,15 +31,13 @@ pub fn thread_name(thread_id: i32, author_name: &str, content: &str) -> String {
 pub async fn send_support_message(
     ctx: &Context,
     thread_id: ChannelId,
-    role_ids: &[RoleId],
-    author: &User,
+    mentions: &[Mention],
     mut messages: Vec<CreateMessage>,
 ) -> Result<()> {
-    let mentions: String = role_ids
+    let mentions = mentions
         .iter()
-        .map(|role| role.mention().to_string())
-        .chain([author.mention().to_string()])
-        .collect();
+        .map(|mention| mention.to_string())
+        .collect::<String>();
 
     let button = CreateButton::new("support_close")
         .label("Close")
@@ -65,7 +60,7 @@ pub async fn send_support_message(
     for (i, message) in messages.into_iter().enumerate() {
         if i == 0 {
             thread_id
-                .send_message(ctx, message.content(mentions.clone()))
+                .send_message(ctx, message.content(&mentions))
                 .await
                 .unwrap();
 
