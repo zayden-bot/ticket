@@ -29,7 +29,9 @@ impl TicketCommand {
 
         interaction.defer_ephemeral(ctx).await.unwrap();
 
-        let embed = CreateEmbed::new().title(title).description(description);
+        let embed = CreateEmbed::new()
+            .title(title)
+            .description(description.replace("\\n", "\n"));
 
         let button = CreateButton::new("ticket_create")
             .style(ButtonStyle::Primary)
