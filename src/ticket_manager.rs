@@ -5,6 +5,7 @@ use sqlx::{Database, FromRow, Pool};
 #[async_trait]
 pub trait TicketManager<Db: Database> {
     async fn get(pool: &Pool<Db>, id: impl Into<MessageId> + Send) -> sqlx::Result<TicketRow>;
+    async fn delete(pool: &Pool<Db>, id: impl Into<MessageId> + Send) -> sqlx::Result<()>;
 }
 
 #[derive(FromRow)]

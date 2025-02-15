@@ -1,24 +1,21 @@
 pub mod components;
-pub mod ready;
-pub mod ticket_manager;
-pub use components::TicketComponent;
-
 pub mod error;
+pub mod message_command;
+pub mod modal;
+pub mod ready;
+pub mod slash_commands;
+pub mod support_guild_manager;
+pub mod ticket_manager;
+
+pub use components::TicketComponent;
 pub use error::Error;
 use error::Result;
-
-pub mod message_command;
 pub use message_command::SupportMessageCommand;
-
-pub mod modal;
 pub use modal::TicketModal;
-
-pub mod slash_commands;
 pub use slash_commands::SupportCommand;
 pub use slash_commands::TicketCommand;
-
-pub mod support_guild_manager;
 pub use support_guild_manager::TicketGuildManager;
+pub use ticket_manager::TicketManager;
 
 use serenity::all::{
     ButtonStyle, ChannelId, Context, CreateButton, CreateMessage, Mentionable, RoleId, User,

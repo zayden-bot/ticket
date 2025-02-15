@@ -1,7 +1,8 @@
 mod close;
-pub mod create;
+mod create;
 mod fixed;
 mod open;
+mod remove;
 
 use serenity::all::{
     CommandInteraction, CommandOptionType, Context, CreateCommand, CreateCommandOption,
@@ -10,12 +11,16 @@ use serenity::all::{
 use sqlx::{Database, Pool};
 use zayden_core::parse_options;
 
-use crate::{Error, Result, TicketGuildManager};
+use crate::{Error, Result, TicketGuildManager, TicketManager};
 
 pub struct TicketCommand;
 
 impl TicketCommand {
-    pub async fn run<Db: Database, GuildManager: TicketGuildManager<Db>>(
+    pub async fn run<
+        Db: Database,
+        GuildManager: TicketGuildManager<Db>,
+        Manager: TicketManager<Db>,
+    >(
         ctx: &Context,
         interaction: &CommandInteraction,
         pool: &Pool<Db>,
@@ -41,6 +46,7 @@ impl TicketCommand {
                 Self::fixed::<Db, GuildManager>(ctx, interaction, pool, options, guild_id).await?
             }
             "open" => Self::open::<Db, GuildManager>(ctx, interaction, pool, guild_id).await?,
+            "remove" => Self::remove::<Db, Manager>(ctx, interaction, pool, options).await?,
             _ => unreachable!("Subcommand is required"),
         }
 
@@ -97,6 +103,28 @@ impl TicketCommand {
         let open =
             CreateCommandOption::new(CommandOptionType::SubCommand, "open", "Open the ticket");
 
+        let remove = CreateCommandOption::new(
+            CommandOptionType::SubCommand,
+            "remove",
+            "Remove a ticket message",
+        )
+        .add_sub_option(
+            CreateCommandOption::new(
+                CommandOptionType::Integer,
+                "message",
+                "The message to remove",
+            )
+            .required(true),
+        )
+        .add_sub_option(
+            CreateCommandOption::new(
+                CommandOptionType::Channel,
+                "channel",
+                "The channel to remove the message from",
+            )
+            .required(false),
+        );
+
         CreateCommand::new("ticket")
             .description("Ticket management commands")
             .default_member_permissions(Permissions::MANAGE_MESSAGES)
@@ -104,5 +132,6 @@ impl TicketCommand {
             .add_option(create)
             .add_option(fixed)
             .add_option(open)
+            .add_option(remove)
     }
 }
