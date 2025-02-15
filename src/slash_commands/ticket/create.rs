@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use serenity::all::{
     ButtonStyle, CommandInteraction, Context, CreateButton, CreateEmbed, CreateMessage,
-    ResolvedValue,
+    EditInteractionResponse, ResolvedValue,
 };
 
 use crate::Result;
@@ -40,6 +40,14 @@ impl TicketCommand {
         interaction
             .channel_id
             .send_message(ctx, CreateMessage::new().embed(embed).button(button))
+            .await
+            .unwrap();
+
+        interaction
+            .edit_response(
+                ctx,
+                EditInteractionResponse::new().content("Ticket embed created"),
+            )
             .await
             .unwrap();
 
