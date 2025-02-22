@@ -82,12 +82,12 @@ impl TicketModal {
 
         let mentions = if role_ids.is_empty() {
             let owner_id = guild_id.to_partial_guild(ctx).await.unwrap().owner_id;
-            vec![message.author.mention(), owner_id.mention()]
+            vec![interaction.user.mention(), owner_id.mention()]
         } else {
             role_ids
                 .into_iter()
                 .map(|id| id.mention())
-                .chain([message.author.mention()])
+                .chain([interaction.user.mention()])
                 .collect::<Vec<_>>()
         };
 
