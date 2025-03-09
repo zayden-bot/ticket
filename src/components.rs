@@ -50,10 +50,9 @@ impl TicketComponent {
             .await
             .unwrap();
 
-        interaction
+        let _ = interaction
             .create_response(ctx, CreateInteractionResponse::Acknowledge)
-            .await
-            .unwrap();
+            .await;
 
         Ok(())
     }
