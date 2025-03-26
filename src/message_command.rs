@@ -23,7 +23,10 @@ impl SupportMessageCommand {
             return Ok(());
         };
 
-        let channel_id = row.channel_id().unwrap();
+        let Some(channel_id) = row.channel_id() else {
+            return Ok(());
+        };
+
         if channel_id != message.channel_id {
             return Ok(());
         }
