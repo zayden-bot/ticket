@@ -23,8 +23,8 @@ impl TicketCommand {
         };
 
         match message.is_empty() {
-            true => interaction.defer_ephemeral(&ctx).await.unwrap(),
-            false => interaction.defer(&ctx).await.unwrap(),
+            true => interaction.defer_ephemeral(&ctx).await?,
+            false => interaction.defer(&ctx).await?,
         };
 
         let support_channel_id = GuildManager::get(pool, guild_id)

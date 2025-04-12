@@ -95,7 +95,7 @@ impl TicketModal {
             .await
             .unwrap();
 
-        let _ = interaction
+        interaction
             .create_response(
                 ctx,
                 CreateInteractionResponse::Message(
@@ -104,7 +104,7 @@ impl TicketModal {
                         .ephemeral(true),
                 ),
             )
-            .await;
+            .await?;
 
         Ok(())
     }

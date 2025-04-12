@@ -16,7 +16,7 @@ impl TicketCommand {
         pool: &Pool<Db>,
         mut options: HashMap<&str, ResolvedValue<'_>>,
     ) -> Result<()> {
-        interaction.defer_ephemeral(ctx).await.unwrap();
+        interaction.defer_ephemeral(ctx).await?;
 
         let message_id = match options.remove("message") {
             Some(ResolvedValue::Integer(id)) => MessageId::new(id as u64),

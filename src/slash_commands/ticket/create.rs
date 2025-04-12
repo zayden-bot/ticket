@@ -27,7 +27,7 @@ impl TicketCommand {
             unreachable!("Label is required")
         };
 
-        interaction.defer_ephemeral(ctx).await.unwrap();
+        interaction.defer_ephemeral(ctx).await?;
 
         let embed = CreateEmbed::new()
             .title(title)

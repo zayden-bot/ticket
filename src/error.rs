@@ -1,3 +1,5 @@
+use serenity::all::DiscordJsonError;
+use serenity::all::HttpError;
 use zayden_core::Error as ZaydenError;
 use zayden_core::ErrorResponse;
 
@@ -5,23 +7,37 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
+    UnknownInteraction(serenity::Error),
     MissingGuildId,
     NotInSupportChannel,
 }
 
-impl ErrorResponse for Error {
-    fn to_response(&self) -> &str {
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Error::MissingGuildId => ZaydenError::MissingGuildId.to_response(),
-            Error::NotInSupportChannel => "This command only works in the support channel.",
+            Error::UnknownInteraction(_) => {
+                write!(f, "{}", ZaydenError::UnknownInteraction.to_response())
+            }
+            Error::MissingGuildId => write!(f, "{}", ZaydenError::MissingGuildId.to_response()),
+            Error::NotInSupportChannel => {
+                write!(f, "This command only works in the support channel.")
+            }
         }
     }
 }
 
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{self:?}")
+impl std::error::Error for Error {}
+
+impl From<serenity::Error> for Error {
+    fn from(e: serenity::Error) -> Self {
+        match e {
+            serenity::Error::Http(HttpError::UnsuccessfulRequest(
+                serenity::all::ErrorResponse {
+                    error: DiscordJsonError { code: 10062, .. },
+                    ..
+                },
+            )) => Error::UnknownInteraction(e),
+            _ => panic!("Unhandled Serenity error: {:?}", e),
+        }
     }
 }
-
-impl std::error::Error for Error {}

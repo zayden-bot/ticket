@@ -18,7 +18,7 @@ impl SupportCommand {
         mut options: HashMap<&str, ResolvedValue<'_>>,
         guild_id: GuildId,
     ) -> Result<()> {
-        interaction.defer(ctx).await.unwrap();
+        interaction.defer(ctx).await?;
 
         let id = match options.remove("id") {
             Some(ResolvedValue::String(id)) => id,
@@ -59,8 +59,7 @@ impl SupportCommand {
                 ctx,
                 EditInteractionResponse::new().content("Support message not found"),
             )
-            .await
-            .unwrap();
+            .await?;
 
         Ok(())
     }

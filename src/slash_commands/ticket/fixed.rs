@@ -23,8 +23,8 @@ impl TicketCommand {
         };
 
         match version.is_empty() {
-            true => interaction.defer_ephemeral(&ctx).await.unwrap(),
-            false => interaction.defer(&ctx).await.unwrap(),
+            true => interaction.defer_ephemeral(&ctx).await?,
+            false => interaction.defer(&ctx).await?,
         };
 
         let support_channel_id = GuildManager::get(pool, guild_id)
@@ -58,7 +58,7 @@ impl TicketCommand {
                 .content(format!("Ticket marked as fixed for {}", version))
         };
 
-        interaction.edit_response(ctx, response).await.unwrap();
+        interaction.edit_response(ctx, response).await?;
 
         Ok(())
     }

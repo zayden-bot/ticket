@@ -29,8 +29,7 @@ impl TicketComponent {
 
         interaction
             .create_response(&ctx, CreateInteractionResponse::Modal(modal))
-            .await
-            .unwrap();
+            .await?;
 
         Ok(())
     }
@@ -50,9 +49,9 @@ impl TicketComponent {
             .await
             .unwrap();
 
-        let _ = interaction
+        interaction
             .create_response(ctx, CreateInteractionResponse::Acknowledge)
-            .await;
+            .await?;
 
         Ok(())
     }
@@ -102,8 +101,7 @@ impl TicketComponent {
                     ),
                 ),
             )
-            .await
-            .unwrap();
+            .await?;
 
         Ok(())
     }
