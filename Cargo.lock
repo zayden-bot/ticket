@@ -2091,7 +2091,7 @@ dependencies = [
 [[package]]
 name = "zayden-core"
 version = "0.1.0"
-source = "git+https://github.com/zayden-bot/slash-command-core.git?branch=master#52530f801519de01c5948f22753a5e97ea1b8821"
+source = "git+https://github.com/zayden-bot/slash-command-core.git?branch=master#44001fbd94ca6fec74b92ad66cfd631c185e3124"
 dependencies = [
  "async-trait",
  "serenity",

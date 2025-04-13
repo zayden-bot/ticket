@@ -1,7 +1,6 @@
 use serenity::all::DiscordJsonError;
 use serenity::all::HttpError;
 use zayden_core::Error as ZaydenError;
-use zayden_core::ErrorResponse;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -15,10 +14,8 @@ pub enum Error {
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Error::UnknownInteraction(_) => {
-                write!(f, "{}", ZaydenError::UnknownInteraction.to_response())
-            }
-            Error::MissingGuildId => write!(f, "{}", ZaydenError::MissingGuildId.to_response()),
+            Error::UnknownInteraction(_) => ZaydenError::UnknownInteraction.fmt(f),
+            Error::MissingGuildId => ZaydenError::MissingGuildId.fmt(f),
             Error::NotInSupportChannel => {
                 write!(f, "This command only works in the support channel.")
             }
