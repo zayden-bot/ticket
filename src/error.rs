@@ -8,6 +8,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     UnknownInteraction(serenity::Error),
     MissingGuildId,
+    ThreadAlreadyArchived(serenity::Error),
     NotInSupportChannel,
 }
 
@@ -16,6 +17,9 @@ impl std::fmt::Display for Error {
         match self {
             Error::UnknownInteraction(_) => ZaydenError::UnknownInteraction.fmt(f),
             Error::MissingGuildId => ZaydenError::MissingGuildId.fmt(f),
+            Error::ThreadAlreadyArchived(_) => {
+                write!(f, "This thread has already been closed and archived.")
+            }
             Error::NotInSupportChannel => {
                 write!(f, "This command only works in the support channel.")
             }
@@ -34,6 +38,12 @@ impl From<serenity::Error> for Error {
                     ..
                 },
             )) => Error::UnknownInteraction(e),
+            serenity::Error::Http(HttpError::UnsuccessfulRequest(
+                serenity::all::ErrorResponse {
+                    error: DiscordJsonError { code: 50083, .. },
+                    ..
+                },
+            )) => Error::ThreadAlreadyArchived(e),
             _ => panic!("Unhandled Serenity error: {:?}", e),
         }
     }

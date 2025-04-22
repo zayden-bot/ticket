@@ -46,8 +46,7 @@ impl TicketComponent {
         interaction
             .channel_id
             .edit_thread(ctx, EditThread::new().name(new_channel_name).archived(true))
-            .await
-            .unwrap();
+            .await?;
 
         interaction
             .create_response(ctx, CreateInteractionResponse::Acknowledge)
