@@ -28,6 +28,15 @@ impl std::fmt::Display for Error {
             ))) => ZaydenError::UnknownInteraction.fmt(f),
             Self::Serenity(serenity::Error::Http(HttpError::UnsuccessfulRequest(
                 serenity::all::ErrorResponse {
+                    error: DiscordJsonError { code: 50001, .. },
+                    ..
+                },
+            ))) => write!(
+                f,
+                "I'm missing access perform that action. Please contact a server admin to resolve this."
+            ),
+            Self::Serenity(serenity::Error::Http(HttpError::UnsuccessfulRequest(
+                serenity::all::ErrorResponse {
                     error: DiscordJsonError { code: 50083, .. },
                     ..
                 },
