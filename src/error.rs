@@ -6,23 +6,33 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
-    UnknownInteraction(serenity::Error),
     MissingGuildId,
-    ThreadAlreadyArchived(serenity::Error),
     NotInSupportChannel,
+
+    Serenity(serenity::Error),
 }
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Error::UnknownInteraction(_) => ZaydenError::UnknownInteraction.fmt(f),
             Error::MissingGuildId => ZaydenError::MissingGuildId.fmt(f),
-            Error::ThreadAlreadyArchived(_) => {
-                write!(f, "This thread has already been closed and archived.")
-            }
             Error::NotInSupportChannel => {
                 write!(f, "This command only works in the support channel.")
             }
+
+            Self::Serenity(serenity::Error::Http(HttpError::UnsuccessfulRequest(
+                serenity::all::ErrorResponse {
+                    error: DiscordJsonError { code: 10062, .. },
+                    ..
+                },
+            ))) => ZaydenError::UnknownInteraction.fmt(f),
+            Self::Serenity(serenity::Error::Http(HttpError::UnsuccessfulRequest(
+                serenity::all::ErrorResponse {
+                    error: DiscordJsonError { code: 50083, .. },
+                    ..
+                },
+            ))) => write!(f, "This thread has already been closed and archived."),
+            Self::Serenity(e) => unimplemented!("Unhandled serenity error: {e:?}"),
         }
     }
 }
@@ -30,21 +40,7 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 
 impl From<serenity::Error> for Error {
-    fn from(e: serenity::Error) -> Self {
-        match e {
-            serenity::Error::Http(HttpError::UnsuccessfulRequest(
-                serenity::all::ErrorResponse {
-                    error: DiscordJsonError { code: 10062, .. },
-                    ..
-                },
-            )) => Error::UnknownInteraction(e),
-            serenity::Error::Http(HttpError::UnsuccessfulRequest(
-                serenity::all::ErrorResponse {
-                    error: DiscordJsonError { code: 50083, .. },
-                    ..
-                },
-            )) => Error::ThreadAlreadyArchived(e),
-            _ => panic!("Unhandled Serenity error: {:?}", e),
-        }
+    fn from(value: serenity::Error) -> Self {
+        Self::Serenity(value)
     }
 }

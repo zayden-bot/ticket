@@ -7,8 +7,8 @@ use sqlx::{Database, Pool};
 use zayden_core::parse_modal_data;
 
 use crate::{
-    send_support_message, thread_name, ticket_manager::TicketManager, to_title_case, Result,
-    TicketGuildManager,
+    Result, TicketGuildManager, send_support_message, thread_name, ticket_manager::TicketManager,
+    to_title_case,
 };
 
 pub struct TicketModal;
@@ -73,8 +73,7 @@ impl TicketModal {
                     .kind(ChannelType::PrivateThread)
                     .auto_archive_duration(AutoArchiveDuration::OneWeek),
             )
-            .await
-            .unwrap();
+            .await?;
 
         GuildManager::update_thread_id(pool, guild_id)
             .await
